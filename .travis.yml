@@ -1,5 +1,6 @@
-language: generic
 sudo: required
+language: generic
+
 services:
   - docker
 
@@ -7,7 +8,7 @@ before_install:
   - docker build -t ozerdur/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run -e CI=true ozerdur/react-test npm run test
+  - docker run -e CI=true ozerdur/react-test npm test
 
 after_success:
   - docker build -t ozerdur/multi-client ./client
@@ -16,8 +17,7 @@ after_success:
   - docker build -t ozerdur/multi-worker ./worker
   # Log in to the docker CLI
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-
-  # take those images and push them to docker hub
+  # Take those images and push them to docker hub
   - docker push ozerdur/multi-client
   - docker push ozerdur/multi-nginx
   - docker push ozerdur/multi-server
@@ -27,7 +27,7 @@ deploy:
   provider: elasticbeanstalk
   region: 'us-east-2'
   app: 'multi-docker'
-  env: 'Multidocker-env'
+  env: 'Multidocker-env-1'
   bucket_name: 'elasticbeanstalk-us-east-2-064962932724'
   bucket_path: 'docker-multi'
   on:
